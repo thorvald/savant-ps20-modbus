@@ -8,7 +8,8 @@
 - Virtual environment: `savant_debug/` (in repo root)
 - Activate: `source savant_debug/bin/activate`
 - Script location: `scan_ps20.py` (in repo root)
-- Run: `python3 scan_ps20.py 172.20.223.207`
+- Run: `python3 scan_ps20.py <UNIT_NUMBER>` (unit numbers 1-8)
+- Watch mode: `python3 scan_ps20.py <UNIT_NUMBER> --watch`
 
 ## Data Characteristics
 - Registers 0-99 contain actual data
@@ -24,11 +25,21 @@ read_holding_registers(address: int, *, count: int = 1, device_id: int = 1)
 - All other params are keyword-only (enforced by `*`)
 
 ## Connection Settings
-- IP: 172.20.223.207
+- 8 PS20 units (unit numbers 1-8)
 - Port: 502
 - retries: 0 (for fast development)
 - timeout: 1 second
 - device_id: 1
+
+## Unit IP Addresses
+- Unit 1: 172.20.233.255
+- Unit 2: 172.20.57.246
+- Unit 3: 172.20.223.225
+- Unit 4: 172.20.224.91
+- Unit 5: 172.20.232.77
+- Unit 6: 172.20.232.89
+- Unit 7: 172.20.232.225
+- Unit 8: 172.20.223.207
 
 ## Sample Register Values
 ```
