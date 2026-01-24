@@ -138,8 +138,15 @@ else:
         else:
             print("OK - Found data:")
             for i, val in enumerate(rr.registers):
+                # Convert to ASCII if both bytes are printable
+                high_byte = (val >> 8) & 0xFF
+                low_byte = val & 0xFF
+                ascii_str = ""
+                if 32 <= high_byte <= 126 and 32 <= low_byte <= 126:
+                    ascii_str = f' "{chr(high_byte)}{chr(low_byte)}"'
+
                 name_suffix = f" ({REGISTER_MAP[i]})" if i in REGISTER_MAP else ""
-                print(f"  Reg {i:3d}: {val:5d}{name_suffix}")
+                print(f"  Reg {i:3d}: {val:5d}{ascii_str}{name_suffix}")
     else:
         # Watch mode - track changes over time
         print("Watch mode enabled - tracking changes every second (Ctrl+C to stop)")
