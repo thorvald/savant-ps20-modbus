@@ -32,14 +32,40 @@ parser.add_argument('-w', '--watch', action='store_true',
                     help='Enable watch mode - track changes every second')
 parser.add_argument('-t', '--table', action='store_true',
                     help='Table mode - show all units in a 2D table for comparison')
+parser.add_argument('-x', '--experiment', action='store_true',
+                    help='Experimental mode - read register 4660 (0x1234) for unit identity')
 
 args = parser.parse_args()
 unit = args.unit
 ip = UNIT_IPS[unit]
 watch_mode = args.watch
 table_mode = args.table
+experiment_mode = args.experiment
 
-if table_mode:
+if experiment_mode:
+    # Experimental mode - read register 4660 (0x1234)
+    print(f"--- Experimental Mode: Reading register 4660 (0x1234) ---\n")
+    print(f"Connecting to Unit {unit} ({ip})...", end=" ", flush=True)
+
+    client = ModbusTcpClient(ip, port=502, retries=0, timeout=1)
+    if not client.connect():
+        print("FAILED")
+        sys.exit(1)
+
+    print("OK")
+
+    rr = client.read_holding_registers(address=4660, count=1, device_id=1)
+    client.close()
+
+    if rr.isError():
+        print(f"ERROR reading register 4660: {rr}")
+    else:
+        value = rr.registers[0]
+        print(f"\nRegister 4660 (0x1234): {value} (0x{value:04x})")
+
+    print("\n--- Experiment Complete ---")
+
+elif table_mode:
     # Table mode - read from all units and display in a 2D table
     print("--- Table Mode: Reading from all units ---\n")
 
