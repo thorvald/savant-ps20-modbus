@@ -30,7 +30,7 @@ read_holding_registers(address: int, *, count: int = 1, device_id: int = 1)
 - timeout: 1 second
 - device_id: 1
 
-## Sample Register Values (non-zero only)
+## Sample Register Values
 ```
 Reg 0: 300, Reg 4: 359, Reg 6: 566, Reg 7: 817
 Reg 9: 7229, Reg 12: 4220-4221, Reg 15: 4223

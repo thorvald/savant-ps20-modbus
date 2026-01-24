@@ -21,8 +21,7 @@ if rr.isError():
 else:
     print("OK - Found data:")
     for i, val in enumerate(rr.registers):
-        if val > 0:  # Only show non-zero values
-            print(f"  Reg {i}: {val}")
+        print(f"  Reg {i}: {val}")
 
 print("\n--- Scan Complete ---")
 client.close()
