@@ -4,6 +4,12 @@
 - **Only supports**: Holding Registers (function code 3)
 - **Does NOT support**: Input Registers, Coils, Discrete Inputs (all timeout)
 
+## Development Environment
+- Virtual environment: `savant_debug/` (in repo root)
+- Activate: `source savant_debug/bin/activate`
+- Script location: `scan_ps20.py` (in repo root)
+- Run: `python3 scan_ps20.py 172.20.223.207`
+
 ## Data Characteristics
 - Registers 0-99 contain actual data
 - Registers 100+ are mirrors/aliases of 0-99 (exact duplicates)
