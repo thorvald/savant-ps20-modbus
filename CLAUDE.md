@@ -11,6 +11,7 @@
 - Run: `python3 scan_ps20.py` (defaults to unit 1)
 - Specify unit: `python3 scan_ps20.py -u 8` or `--unit 8` (unit numbers 1-8)
 - Watch mode: `python3 scan_ps20.py -w` or `--watch`
+- Table mode: `python3 scan_ps20.py -t` or `--table` (shows all 8 units in 2D table)
 - Combined: `python3 scan_ps20.py -u 5 -w`
 
 ## Data Characteristics
