@@ -66,6 +66,9 @@ if table_mode:
 
     print("\n--- Register Comparison Table ---")
 
+    # Determine the maximum number of registers returned by any unit
+    max_registers = max(len(data) for data in all_unit_data.values() if data is not None)
+
     # Print header
     header = "Reg"
     for u in sorted(UNIT_IPS.keys()):
@@ -74,10 +77,10 @@ if table_mode:
     print("-" * len(header))
 
     # Print each register row
-    for reg_num in range(125):
+    for reg_num in range(max_registers):
         row = f"{reg_num:3d}"
         for u in sorted(UNIT_IPS.keys()):
-            if all_unit_data[u] is None:
+            if all_unit_data[u] is None or reg_num >= len(all_unit_data[u]):
                 row += "     -"
             else:
                 row += f" {all_unit_data[u][reg_num]:5d}"
