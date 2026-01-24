@@ -1,5 +1,6 @@
 import sys
 import time
+import argparse
 from pymodbus.client import ModbusTcpClient
 
 # Known register mappings
@@ -20,25 +21,20 @@ UNIT_IPS = {
 }
 
 # Parse command-line arguments
-if len(sys.argv) < 2:
-    print("Error: Please provide unit number (1-8).")
-    print("Usage: python3 scan_ps20.py <UNIT_NUMBER> [--watch|-w]")
-    print(f"Available units: {', '.join(f'{u}: {ip}' for u, ip in UNIT_IPS.items())}")
-    sys.exit(1)
+parser = argparse.ArgumentParser(
+    description='Scan Savant PS20 Modbus registers',
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    epilog=f"Available units:\n" + '\n'.join(f"  {u}: {ip}" for u, ip in UNIT_IPS.items())
+)
+parser.add_argument('-u', '--unit', type=int, default=1, choices=list(UNIT_IPS.keys()),
+                    help='PS20 unit number (default: 1)')
+parser.add_argument('-w', '--watch', action='store_true',
+                    help='Enable watch mode - track changes every second')
 
-try:
-    unit = int(sys.argv[1])
-    if unit not in UNIT_IPS:
-        print(f"Error: Unit number must be between 1 and {len(UNIT_IPS)}")
-        print(f"Available units: {', '.join(f'{u}: {ip}' for u, ip in UNIT_IPS.items())}")
-        sys.exit(1)
-    ip = UNIT_IPS[unit]
-except ValueError:
-    print("Error: Unit number must be an integer.")
-    print(f"Available units: {', '.join(f'{u}: {ip}' for u, ip in UNIT_IPS.items())}")
-    sys.exit(1)
-
-watch_mode = "--watch" in sys.argv or "-w" in sys.argv
+args = parser.parse_args()
+unit = args.unit
+ip = UNIT_IPS[unit]
+watch_mode = args.watch
 client = ModbusTcpClient(ip, port=502, retries=0, timeout=1)
 
 print(f"--- Connecting to Unit {unit} ({ip}) ---")

@@ -8,8 +8,10 @@
 - Virtual environment: `savant_debug/` (in repo root)
 - Activate: `source savant_debug/bin/activate`
 - Script location: `scan_ps20.py` (in repo root)
-- Run: `python3 scan_ps20.py <UNIT_NUMBER>` (unit numbers 1-8)
-- Watch mode: `python3 scan_ps20.py <UNIT_NUMBER> --watch`
+- Run: `python3 scan_ps20.py` (defaults to unit 1)
+- Specify unit: `python3 scan_ps20.py -u 8` or `--unit 8` (unit numbers 1-8)
+- Watch mode: `python3 scan_ps20.py -w` or `--watch`
+- Combined: `python3 scan_ps20.py -u 5 -w`
 
 ## Data Characteristics
 - Registers 0-99 contain actual data
