@@ -187,6 +187,17 @@ else:
                         if 32 <= low_byte <= 126:
                             serial_number += chr(low_byte)
                 print(f"Serial Number (reg 28-38): {serial_number}")
+
+            # IP address from registers 40-41
+            if len(rr.registers) > 41:
+                # Register 40: high byte = octet 4, low byte = octet 3
+                # Register 41: high byte = octet 2, low byte = octet 1
+                octet4 = (rr.registers[40] >> 8) & 0xFF
+                octet3 = rr.registers[40] & 0xFF
+                octet2 = (rr.registers[41] >> 8) & 0xFF
+                octet1 = rr.registers[41] & 0xFF
+                ip_address = f"{octet1}.{octet2}.{octet3}.{octet4}"
+                print(f"IP Address (reg 40-41): {ip_address}")
     else:
         # Watch mode - track changes over time
         print("Watch mode enabled - tracking changes every second (Ctrl+C to stop)")
