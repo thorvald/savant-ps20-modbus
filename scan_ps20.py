@@ -58,6 +58,8 @@ parser.add_argument('-t', '--table', action='store_true',
                     help='Table mode - show all units in a 2D table for comparison')
 parser.add_argument('-x', '--experiment', action='store_true',
                     help='Experimental mode - read register 4660 (0x1234) for unit identity')
+parser.add_argument('-a', '--all', action='store_true',
+                    help='Show all registers including decoded ones in raw output')
 
 args = parser.parse_args()
 unit = args.unit
@@ -65,6 +67,7 @@ ip = UNIT_IPS[unit]
 watch_mode = args.watch
 table_mode = args.table
 experiment_mode = args.experiment
+show_all = args.all
 
 if experiment_mode:
     # Experimental mode - read register 4660 (0x1234)
@@ -128,6 +131,10 @@ elif table_mode:
 
     # Print each register row
     for reg_num in range(max_registers):
+        # Skip decoded registers unless --all is specified
+        if not show_all and reg_num in REGISTER_MAP:
+            continue
+
         row = f"{reg_num:3d}"
         for u in sorted(UNIT_IPS.keys()):
             if all_unit_data[u] is None or reg_num >= len(all_unit_data[u]):
@@ -162,6 +169,9 @@ else:
         else:
             print("OK - Found data:")
             for i, val in enumerate(rr.registers):
+                # Skip decoded registers unless --all is specified
+                if not show_all and i in REGISTER_MAP:
+                    continue
                 name_suffix = f" ({REGISTER_MAP[i]})" if i in REGISTER_MAP else ""
                 print(f"  Reg {i:3d}: {val:5d}{name_suffix}")
 
@@ -243,6 +253,9 @@ else:
 
                 print(f"--- Update {iteration} ---")
                 for i, val in enumerate(current_values):
+                    # Skip decoded registers unless --all is specified
+                    if not show_all and i in REGISTER_MAP:
+                        continue
                     delta_prev = val - previous_values[i]
                     delta_start = val - initial_values[i]
                     name_suffix = f" ({REGISTER_MAP[i]})" if i in REGISTER_MAP else ""
