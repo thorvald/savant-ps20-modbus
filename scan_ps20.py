@@ -138,66 +138,59 @@ else:
         if rr.isError():
             print(f"ERROR: {rr}")
         else:
+            # Verify we got exactly 42 registers
+            if len(rr.registers) != 42:
+                print(f"ERROR: Expected 42 registers, got {len(rr.registers)}")
+                client.close()
+                sys.exit(1)
+
             print("OK - Found data:")
             for i, val in enumerate(rr.registers):
-                # Convert to ASCII if both bytes are printable
-                high_byte = (val >> 8) & 0xFF
-                low_byte = val & 0xFF
-                ascii_str = ""
-                if 32 <= high_byte <= 126 and 32 <= low_byte <= 126:
-                    ascii_str = f' "{chr(high_byte)}{chr(low_byte)}"'
-
                 name_suffix = f" ({REGISTER_MAP[i]})" if i in REGISTER_MAP else ""
-                print(f"  Reg {i:3d}: {val:5d}{ascii_str}{name_suffix}")
+                print(f"  Reg {i:3d}: {val:5d}{name_suffix}")
 
             # Decoded data section
             print("\n--- Decoded Data ---")
 
             # Timestamp from registers 17+18
-            if len(rr.registers) > 18:
-                time_t = (rr.registers[17] << 16) | rr.registers[18]
-                try:
-                    dt = datetime.fromtimestamp(time_t)
-                    print(f"Timestamp (reg 17-18): {dt.strftime('%Y-%m-%d %H:%M:%S')}")
-                except (ValueError, OSError):
-                    print(f"Timestamp (reg 17-18): Invalid ({time_t})")
+            time_t = (rr.registers[17] << 16) | rr.registers[18]
+            try:
+                dt = datetime.fromtimestamp(time_t)
+                print(f"Timestamp (reg 17-18): {dt.strftime('%Y-%m-%d %H:%M:%S')}")
+            except (ValueError, OSError):
+                print(f"Timestamp (reg 17-18): Invalid ({time_t})")
 
             # Device code from registers 19-27
-            if len(rr.registers) > 27:
-                device_code = ""
-                for i in range(19, 28):
-                    if i < len(rr.registers):
-                        high_byte = (rr.registers[i] >> 8) & 0xFF
-                        low_byte = rr.registers[i] & 0xFF
-                        if 32 <= high_byte <= 126:
-                            device_code += chr(high_byte)
-                        if 32 <= low_byte <= 126:
-                            device_code += chr(low_byte)
-                print(f"Device Code (reg 19-27): {device_code}")
+            device_code = ""
+            for i in range(19, 28):
+                high_byte = (rr.registers[i] >> 8) & 0xFF
+                low_byte = rr.registers[i] & 0xFF
+                if 32 <= high_byte <= 126:
+                    device_code += chr(high_byte)
+                if 32 <= low_byte <= 126:
+                    device_code += chr(low_byte)
+            print(f"Device Code (reg 19-27): {device_code}")
 
             # Serial number from registers 28-38
-            if len(rr.registers) > 38:
-                serial_number = ""
-                for i in range(28, 39):
-                    if i < len(rr.registers):
-                        high_byte = (rr.registers[i] >> 8) & 0xFF
-                        low_byte = rr.registers[i] & 0xFF
-                        if 32 <= high_byte <= 126:
-                            serial_number += chr(high_byte)
-                        if 32 <= low_byte <= 126:
-                            serial_number += chr(low_byte)
-                print(f"Serial Number (reg 28-38): {serial_number}")
+            serial_number = ""
+            for i in range(28, 39):
+                high_byte = (rr.registers[i] >> 8) & 0xFF
+                low_byte = rr.registers[i] & 0xFF
+                if 32 <= high_byte <= 126:
+                    serial_number += chr(high_byte)
+                if 32 <= low_byte <= 126:
+                    serial_number += chr(low_byte)
+            print(f"Serial Number (reg 28-38): {serial_number}")
 
             # IP address from registers 40-41
-            if len(rr.registers) > 41:
-                # Register 40: high byte = octet 4, low byte = octet 3
-                # Register 41: high byte = octet 2, low byte = octet 1
-                octet4 = (rr.registers[40] >> 8) & 0xFF
-                octet3 = rr.registers[40] & 0xFF
-                octet2 = (rr.registers[41] >> 8) & 0xFF
-                octet1 = rr.registers[41] & 0xFF
-                ip_address = f"{octet1}.{octet2}.{octet3}.{octet4}"
-                print(f"IP Address (reg 40-41): {ip_address}")
+            # Register 40: high byte = octet 4, low byte = octet 3
+            # Register 41: high byte = octet 2, low byte = octet 1
+            octet4 = (rr.registers[40] >> 8) & 0xFF
+            octet3 = rr.registers[40] & 0xFF
+            octet2 = (rr.registers[41] >> 8) & 0xFF
+            octet1 = rr.registers[41] & 0xFF
+            ip_address = f"{octet1}.{octet2}.{octet3}.{octet4}"
+            print(f"IP Address (reg 40-41): {ip_address}")
     else:
         # Watch mode - track changes over time
         print("Watch mode enabled - tracking changes every second (Ctrl+C to stop)")
