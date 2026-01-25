@@ -147,19 +147,46 @@ else:
                 if 32 <= high_byte <= 126 and 32 <= low_byte <= 126:
                     ascii_str = f' "{chr(high_byte)}{chr(low_byte)}"'
 
-                # Special handling for register 17+18 as time_t
-                time_str = ""
-                if i == 17 and i+1 < len(rr.registers):
-                    # Combine registers 17 and 18 as 32-bit time_t (big-endian)
-                    time_t = (rr.registers[17] << 16) | rr.registers[18]
-                    try:
-                        dt = datetime.fromtimestamp(time_t)
-                        time_str = f" [{dt.strftime('%Y-%m-%d %H:%M:%S')}]"
-                    except (ValueError, OSError):
-                        pass
-
                 name_suffix = f" ({REGISTER_MAP[i]})" if i in REGISTER_MAP else ""
-                print(f"  Reg {i:3d}: {val:5d}{ascii_str}{time_str}{name_suffix}")
+                print(f"  Reg {i:3d}: {val:5d}{ascii_str}{name_suffix}")
+
+            # Decoded data section
+            print("\n--- Decoded Data ---")
+
+            # Timestamp from registers 17+18
+            if len(rr.registers) > 18:
+                time_t = (rr.registers[17] << 16) | rr.registers[18]
+                try:
+                    dt = datetime.fromtimestamp(time_t)
+                    print(f"Timestamp (reg 17-18): {dt.strftime('%Y-%m-%d %H:%M:%S')}")
+                except (ValueError, OSError):
+                    print(f"Timestamp (reg 17-18): Invalid ({time_t})")
+
+            # Device code from registers 19-27
+            if len(rr.registers) > 27:
+                device_code = ""
+                for i in range(19, 28):
+                    if i < len(rr.registers):
+                        high_byte = (rr.registers[i] >> 8) & 0xFF
+                        low_byte = rr.registers[i] & 0xFF
+                        if 32 <= high_byte <= 126:
+                            device_code += chr(high_byte)
+                        if 32 <= low_byte <= 126:
+                            device_code += chr(low_byte)
+                print(f"Device Code (reg 19-27): {device_code}")
+
+            # Serial number from registers 28-38
+            if len(rr.registers) > 38:
+                serial_number = ""
+                for i in range(28, 39):
+                    if i < len(rr.registers):
+                        high_byte = (rr.registers[i] >> 8) & 0xFF
+                        low_byte = rr.registers[i] & 0xFF
+                        if 32 <= high_byte <= 126:
+                            serial_number += chr(high_byte)
+                        if 32 <= low_byte <= 126:
+                            serial_number += chr(low_byte)
+                print(f"Serial Number (reg 28-38): {serial_number}")
     else:
         # Watch mode - track changes over time
         print("Watch mode enabled - tracking changes every second (Ctrl+C to stop)")
