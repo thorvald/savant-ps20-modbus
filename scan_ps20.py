@@ -138,16 +138,16 @@ else:
         if rr.isError():
             print(f"ERROR: {rr}")
         else:
-            # Verify we got exactly 42 registers
-            if len(rr.registers) != 42:
-                print(f"ERROR: Expected 42 registers, got {len(rr.registers)}")
-                client.close()
-                sys.exit(1)
-
             print("OK - Found data:")
             for i, val in enumerate(rr.registers):
                 name_suffix = f" ({REGISTER_MAP[i]})" if i in REGISTER_MAP else ""
                 print(f"  Reg {i:3d}: {val:5d}{name_suffix}")
+
+            # Verify we got exactly 42 registers
+            if len(rr.registers) != 42:
+                print(f"\nERROR: Expected 42 registers, got {len(rr.registers)}")
+                client.close()
+                sys.exit(1)
 
             # Decoded data section
             print("\n--- Decoded Data ---")
