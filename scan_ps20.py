@@ -7,7 +7,30 @@ from pymodbus.client import ModbusTcpClient
 # Known register mappings
 REGISTER_MAP = {
     17: "timestamp_high",  # Registers 17+18 form 32-bit Unix timestamp
-    18: "timestamp_low"
+    18: "timestamp_low",
+    19: "device_code[0]",  # Registers 19-27 contain device code (ASCII)
+    20: "device_code[1]",
+    21: "device_code[2]",
+    22: "device_code[3]",
+    23: "device_code[4]",
+    24: "device_code[5]",
+    25: "device_code[6]",
+    26: "device_code[7]",
+    27: "device_code[8]",
+    28: "serial[0]",       # Registers 28-38 contain serial number (ASCII)
+    29: "serial[1]",
+    30: "serial[2]",
+    31: "serial[3]",
+    32: "serial[4]",
+    33: "serial[5]",
+    34: "serial[6]",
+    35: "serial[7]",
+    36: "serial[8]",
+    37: "serial[9]",
+    38: "serial[10]",
+    39: "unknown",         # Always 1?
+    40: "ip_high",         # Registers 40-41 contain IP address
+    41: "ip_low"
 }
 
 # PS20 unit IP address mappings
