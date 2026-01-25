@@ -28,7 +28,6 @@ REGISTER_MAP = {
     36: "serial[8]",
     37: "serial[9]",
     38: "serial[10]",
-    39: "unknown",         # Always 1?
     40: "ip_high",         # Registers 40-41 contain IP address
     41: "ip_low"
 }
