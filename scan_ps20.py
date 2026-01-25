@@ -1,11 +1,13 @@
 import sys
 import time
 import argparse
+from datetime import datetime
 from pymodbus.client import ModbusTcpClient
 
 # Known register mappings
 REGISTER_MAP = {
-    18: "uptime_seconds"
+    17: "timestamp_high",  # Registers 17+18 form 32-bit Unix timestamp
+    18: "timestamp_low"
 }
 
 # PS20 unit IP address mappings
@@ -121,7 +123,7 @@ elif table_mode:
 
 else:
     # Single unit mode (either single read or watch)
-    client = ModbusTcpClient(ip, port=502, retries=0, timeout=1)
+    client = ModbusTcpClient(ip, port=502, retries=0, timeout=5)
 
     print(f"--- Connecting to Unit {unit} ({ip}) ---")
     if not client.connect():
@@ -145,8 +147,19 @@ else:
                 if 32 <= high_byte <= 126 and 32 <= low_byte <= 126:
                     ascii_str = f' "{chr(high_byte)}{chr(low_byte)}"'
 
+                # Special handling for register 17+18 as time_t
+                time_str = ""
+                if i == 17 and i+1 < len(rr.registers):
+                    # Combine registers 17 and 18 as 32-bit time_t (big-endian)
+                    time_t = (rr.registers[17] << 16) | rr.registers[18]
+                    try:
+                        dt = datetime.fromtimestamp(time_t)
+                        time_str = f" [{dt.strftime('%Y-%m-%d %H:%M:%S')}]"
+                    except (ValueError, OSError):
+                        pass
+
                 name_suffix = f" ({REGISTER_MAP[i]})" if i in REGISTER_MAP else ""
-                print(f"  Reg {i:3d}: {val:5d}{ascii_str}{name_suffix}")
+                print(f"  Reg {i:3d}: {val:5d}{ascii_str}{time_str}{name_suffix}")
     else:
         # Watch mode - track changes over time
         print("Watch mode enabled - tracking changes every second (Ctrl+C to stop)")
