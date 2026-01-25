@@ -79,7 +79,7 @@ def collect_unit_data(unit_number, unit_ip):
     """Collect data from a single PS20 unit and return data point (does not write)"""
     try:
         # Connect to PS20 unit
-        client = ModbusTcpClient(unit_ip, port=502, retries=0, timeout=1)
+        client = ModbusTcpClient(unit_ip, port=502, retries=1, timeout=5)
         if not client.connect():
             print(f"[{datetime.now().strftime('%H:%M:%S')}] Unit {unit_number} ({unit_ip}): Connection FAILED")
             return None
