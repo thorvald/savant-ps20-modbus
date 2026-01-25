@@ -172,8 +172,11 @@ else:
                 # Skip decoded registers unless --all is specified
                 if not show_all and i in REGISTER_MAP:
                     continue
+                # Convert to signed 16-bit if MSB is set
+                signed_val = val if val < 32768 else val - 65536
+                signed_str = f" (signed: {signed_val:6d})" if val >= 32768 else ""
                 name_suffix = f" ({REGISTER_MAP[i]})" if i in REGISTER_MAP else ""
-                print(f"  Reg {i:3d}: {val:5d}{name_suffix}")
+                print(f"  Reg {i:3d}: {val:5d}{signed_str}{name_suffix}")
 
             # Verify we got exactly 42 registers
             if len(rr.registers) != 42:
@@ -256,10 +259,13 @@ else:
                     # Skip decoded registers unless --all is specified
                     if not show_all and i in REGISTER_MAP:
                         continue
+                    # Convert to signed 16-bit if MSB is set
+                    signed_val = val if val < 32768 else val - 65536
+                    signed_str = f" (signed: {signed_val:6d})" if val >= 32768 else ""
                     delta_prev = val - previous_values[i]
                     delta_start = val - initial_values[i]
                     name_suffix = f" ({REGISTER_MAP[i]})" if i in REGISTER_MAP else ""
-                    print(f"  Reg {i:3d}: {val:5d}  Δprev: {delta_prev:6d}  Δstart: {delta_start:6d}{name_suffix}")
+                    print(f"  Reg {i:3d}: {val:5d}{signed_str}  Δprev: {delta_prev:6d}  Δstart: {delta_start:6d}{name_suffix}")
 
                 previous_values = list(current_values)
                 print()
