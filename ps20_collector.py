@@ -5,18 +5,7 @@ import argparse
 from datetime import datetime
 from pymodbus.client import ModbusTcpClient
 from influxdb import InfluxDBClient
-
-# PS20 unit IP address mappings
-UNIT_IPS = {
-    1: "172.20.233.255",
-    2: "172.20.57.246",
-    3: "172.20.223.225",
-    4: "172.20.224.91",
-    5: "172.20.232.77",
-    6: "172.20.232.89",
-    7: "172.20.232.225",
-    8: "172.20.223.207"
-}
+from ps20_common import UNIT_IPS
 
 # InfluxDB configuration
 INFLUX_HOST = "172.30.0.199"

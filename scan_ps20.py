@@ -3,46 +3,7 @@ import time
 import argparse
 from datetime import datetime
 from pymodbus.client import ModbusTcpClient
-
-# Known register mappings
-REGISTER_MAP = {
-    17: "timestamp_high",  # Registers 17+18 form 32-bit Unix timestamp
-    18: "timestamp_low",
-    19: "device_code[0]",  # Registers 19-27 contain device code (ASCII)
-    20: "device_code[1]",
-    21: "device_code[2]",
-    22: "device_code[3]",
-    23: "device_code[4]",
-    24: "device_code[5]",
-    25: "device_code[6]",
-    26: "device_code[7]",
-    27: "device_code[8]",
-    28: "serial[0]",       # Registers 28-38 contain serial number (ASCII)
-    29: "serial[1]",
-    30: "serial[2]",
-    31: "serial[3]",
-    32: "serial[4]",
-    33: "serial[5]",
-    34: "serial[6]",
-    35: "serial[7]",
-    36: "serial[8]",
-    37: "serial[9]",
-    38: "serial[10]",
-    40: "ip_high",         # Registers 40-41 contain IP address
-    41: "ip_low"
-}
-
-# PS20 unit IP address mappings
-UNIT_IPS = {
-    1: "172.20.233.255",
-    2: "172.20.57.246",
-    3: "172.20.223.225",
-    4: "172.20.224.91",
-    5: "172.20.232.77",
-    6: "172.20.232.89",
-    7: "172.20.232.225",
-    8: "172.20.223.207"
-}
+from ps20_common import UNIT_IPS, REGISTER_MAP
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(
