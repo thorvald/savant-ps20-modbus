@@ -27,7 +27,7 @@
 - InfluxDB: `172.30.0.199:8086`
 - Database: `home`
 - Measurement: `ps20`
-- Tags: `unit_number`, `serial_number`, `ip_address`
+- Tags: `unit_number`, `serial_number`, `serial_suffix` (last 3 digits), `ip_address`
 - Fields: `reg_0` through `reg_16` (signed + unsigned), `reg_39` (signed + unsigned), `device_code`, `timestamp`
 
 ## Register Map
@@ -94,9 +94,9 @@ read_holding_registers(address: int, *, count: int = 1, device_id: int = 1)
 ```sql
 SELECT mean("reg_$register") FROM "ps20"
 WHERE $timeFilter
-GROUP BY time($__interval), "unit_number"::tag fill(previous)
+GROUP BY time($__interval), "serial_suffix"::tag fill(previous)
 ```
-- Alias by: `$tag_unit_number`
+- Alias by: `$tag_serial_suffix`
 - Use panel repeat with `register` variable set to "All"
 
 ### Sum Query (aggregated across all units)
@@ -104,7 +104,7 @@ GROUP BY time($__interval), "unit_number"::tag fill(previous)
 SELECT sum("value") FROM (
   SELECT mean("reg_$register") as "value" FROM "ps20"
   WHERE $timeFilter
-  GROUP BY time($__interval), "unit_number"
+  GROUP BY time($__interval), "serial_suffix"
 ) GROUP BY time($__interval)
 ```
 - Alias by: `Sum`

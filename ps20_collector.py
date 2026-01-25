@@ -93,6 +93,7 @@ def collect_unit_data(unit_number, unit_ip):
         tags = {
             "unit_number": str(unit_number),
             "serial_number": serial_number,
+            "serial_suffix": serial_number[-3:],  # Last 3 digits for Grafana labels
             "ip_address": ip_address
         }
 
