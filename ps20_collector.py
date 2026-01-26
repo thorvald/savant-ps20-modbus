@@ -18,9 +18,9 @@ POLL_INTERVAL = 5
 
 
 def decode_device_code(registers):
-    """Decode device code from registers 19-27"""
+    """Decode device code from registers 20-28 (1-indexed)"""
     device_code = ""
-    for i in range(19, 28):
+    for i in range(20, 29):
         high_byte = (registers[i] >> 8) & 0xFF
         low_byte = registers[i] & 0xFF
         if 32 <= high_byte <= 126:
@@ -31,9 +31,9 @@ def decode_device_code(registers):
 
 
 def decode_serial_number(registers):
-    """Decode serial number from registers 28-38"""
+    """Decode serial number from registers 29-39 (1-indexed)"""
     serial_number = ""
-    for i in range(28, 39):
+    for i in range(29, 40):
         high_byte = (registers[i] >> 8) & 0xFF
         low_byte = registers[i] & 0xFF
         if 32 <= high_byte <= 126:
@@ -44,19 +44,19 @@ def decode_serial_number(registers):
 
 
 def decode_ip_address(registers):
-    """Decode IP address from registers 40-41"""
-    # Register 40: high byte = octet 4, low byte = octet 3
-    # Register 41: high byte = octet 2, low byte = octet 1
-    octet4 = (registers[40] >> 8) & 0xFF
-    octet3 = registers[40] & 0xFF
-    octet2 = (registers[41] >> 8) & 0xFF
-    octet1 = registers[41] & 0xFF
+    """Decode IP address from registers 41-42 (1-indexed)"""
+    # Register 41: high byte = octet 4, low byte = octet 3
+    # Register 42: high byte = octet 2, low byte = octet 1
+    octet4 = (registers[41] >> 8) & 0xFF
+    octet3 = registers[41] & 0xFF
+    octet2 = (registers[42] >> 8) & 0xFF
+    octet1 = registers[42] & 0xFF
     return f"{octet1}.{octet2}.{octet3}.{octet4}"
 
 
 def decode_timestamp(registers):
-    """Decode Unix timestamp from registers 17-18"""
-    return (registers[17] << 16) | registers[18]
+    """Decode Unix timestamp from registers 18-19 (1-indexed)"""
+    return (registers[18] << 16) | registers[19]
 
 
 def to_signed(value):
@@ -73,15 +73,16 @@ def collect_unit_data(unit_number, unit_ip):
             print(f"[{datetime.now().strftime('%H:%M:%S')}] Unit {unit_number} ({unit_ip}): Connection FAILED")
             return None
 
-        # Read registers
-        rr = client.read_holding_registers(address=0, count=125, device_id=1)
+        # Read registers (1-indexed)
+        rr = client.read_holding_registers(address=1, count=125, device_id=1)
         client.close()
 
         if rr.isError():
             print(f"[{datetime.now().strftime('%H:%M:%S')}] Unit {unit_number} ({unit_ip}): Read ERROR - {rr}")
             return None
 
-        registers = rr.registers
+        # Convert to dictionary with 1-indexed keys
+        registers = {i: val for i, val in enumerate(rr.registers, start=1)}
 
         # Decode stable identifiers
         serial_number = decode_serial_number(registers)
@@ -103,18 +104,18 @@ def collect_unit_data(unit_number, unit_ip):
             "timestamp": timestamp
         }
 
-        # Add register 0-16 (signed and unsigned)
-        for i in range(17):
+        # Add registers 1-17 (signed and unsigned)
+        for i in range(1, 18):
             unsigned_val = registers[i]
             signed_val = to_signed(unsigned_val)
             fields[f"reg_{i}"] = signed_val
             fields[f"reg_{i}_unsigned"] = unsigned_val
 
-        # Add register 39 (signed and unsigned)
-        unsigned_val = registers[39]
+        # Add register 40 (signed and unsigned)
+        unsigned_val = registers[40]
         signed_val = to_signed(unsigned_val)
-        fields["reg_39"] = signed_val
-        fields["reg_39_unsigned"] = unsigned_val
+        fields["reg_40"] = signed_val
+        fields["reg_40_unsigned"] = unsigned_val
 
         # Return data point for batch writing
         data_point = {

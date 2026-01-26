@@ -15,30 +15,30 @@ UNIT_IPS = {
     8: "172.20.233.255"   # Serial NC-70-2505-01-0123-214
 }
 
-# Known register mappings
+# Known register mappings (1-indexed)
 REGISTER_MAP = {
-    17: "timestamp_high",  # Registers 17+18 form 32-bit Unix timestamp
-    18: "timestamp_low",
-    19: "device_code[0]",  # Registers 19-27 contain device code (ASCII)
-    20: "device_code[1]",
-    21: "device_code[2]",
-    22: "device_code[3]",
-    23: "device_code[4]",
-    24: "device_code[5]",
-    25: "device_code[6]",
-    26: "device_code[7]",
-    27: "device_code[8]",
-    28: "serial[0]",       # Registers 28-38 contain serial number (ASCII)
-    29: "serial[1]",
-    30: "serial[2]",
-    31: "serial[3]",
-    32: "serial[4]",
-    33: "serial[5]",
-    34: "serial[6]",
-    35: "serial[7]",
-    36: "serial[8]",
-    37: "serial[9]",
-    38: "serial[10]",
-    40: "ip_high",         # Registers 40-41 contain IP address
-    41: "ip_low"
+    18: "timestamp_high",  # Registers 18+19 form 32-bit Unix timestamp
+    19: "timestamp_low",
+    20: "device_code[0]",  # Registers 20-28 contain device code (ASCII)
+    21: "device_code[1]",
+    22: "device_code[2]",
+    23: "device_code[3]",
+    24: "device_code[4]",
+    25: "device_code[5]",
+    26: "device_code[6]",
+    27: "device_code[7]",
+    28: "device_code[8]",
+    29: "serial[0]",       # Registers 29-39 contain serial number (ASCII)
+    30: "serial[1]",
+    31: "serial[2]",
+    32: "serial[3]",
+    33: "serial[4]",
+    34: "serial[5]",
+    35: "serial[6]",
+    36: "serial[7]",
+    37: "serial[8]",
+    38: "serial[9]",
+    39: "serial[10]",
+    41: "ip_high",         # Registers 41-42 contain IP address
+    42: "ip_low"
 }
