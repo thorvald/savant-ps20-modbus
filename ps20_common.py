@@ -15,6 +15,18 @@ UNIT_IPS = {
     8: "172.20.233.255"   # Serial NC-70-2505-01-0123-214
 }
 
+# Unit number to serial number mapping
+UNIT_SERIALS = {
+    1: "NC-70-2505-01-0096-840",  # Leader
+    2: "NC-70-2505-01-0069-262",
+    3: "NC-70-2505-01-0144-487",
+    4: "NC-70-2505-01-0120-355",
+    5: "NC-70-2505-01-0087-524",
+    6: "NC-70-2505-01-0040-670",
+    7: "NC-70-2505-01-0094-476",
+    8: "NC-70-2505-01-0123-214"
+}
+
 # Known register mappings (1-indexed)
 REGISTER_MAP = {
     18: "timestamp_high",  # Registers 18+19 form 32-bit Unix timestamp
