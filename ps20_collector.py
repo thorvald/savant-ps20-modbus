@@ -179,11 +179,16 @@ def main():
                 if data_point:
                     all_data_points.append(data_point)
 
+            # Add units_reporting field to each data point
+            units_reporting = len(all_data_points)
+            for data_point in all_data_points:
+                data_point["fields"]["units_reporting"] = units_reporting
+
             # Write all data points with same timestamp in batch
             if all_data_points:
                 try:
                     influx_client.write_points(all_data_points)
-                    print(f"Batch wrote {len(all_data_points)} units to InfluxDB")
+                    print(f"Batch wrote {units_reporting}/{len(UNIT_IPS)} units to InfluxDB")
                 except Exception as e:
                     print(f"ERROR writing batch to InfluxDB: {e}")
 
